@@ -1,45 +1,28 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
-
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
-
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
-
----
-
-## Edit a file
-
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
-
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
-
----
-
-## Create a file
-
-Next, you’ll add a new file to this repository.
-
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
-
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
-
----
-
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+This repo contains the server side code for The Terminators class project
+Getting Started:
+	Downloads
+		This project is written in python 3.7 and utilizes a couple python libraries listed here
+		get python: https://www.python.org/downloads/
+		get flask: pip install flask 
+		get flask-socketio: pip install flask_socketIO
+	Running the project:
+		run the script ServerSide.py with 'python ServerSide.py' in the console
+		go to localhost in any browser to see result
+		To see site on a different computer ensure both computers are on the same Wifi (cont)
+		Search the IPv4 adress of the server computer with ipconfig at the command line
+		On the client computer go type in that ip into the search bar
+Documentation:
+flask docs: http://flask.palletsprojects.com/en/1.1.x/
+python docs: https://docs.python.org/3/
+	Basics:
+		templates:
+			This code relies on Flask to manager client server communications.
+			functions with @app.route("") determine what html pages will be loaded when the user requests different url
+			Ex: a function with @app.route("/home") will be called when then user goes to the url: localhost/home
+			functions with @app.route("") typically return a call to render_template
+			render_template takes in arguments for what page should be loaded and what spcific info should be in the page
+			Ex: 'return render_template('index.html',user=userName)' displays index.html with the variable user
+			all templates are found in the templates folder
+	
+		
+	
