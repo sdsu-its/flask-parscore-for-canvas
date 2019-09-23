@@ -57,5 +57,12 @@ python docs: https://docs.python.org/3/
 			These events can be called from the server side with the .emit function 
 			
 			All events can have additional arguments passed and recieved as long as the event declaration allows for them
-			
+	Login system:
+		The first page at localhost/ is a login page that queries for username and password
+		
+		When the form is submmited the information is passed back to the server
+		
+		The server checks if the information is valid 
+		
+		if the info is valid an event will be sent back to the client that loads the home page
 	
