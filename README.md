@@ -47,5 +47,15 @@ python docs: https://docs.python.org/3/
 			
 			all templates are found in the templates folder
 	
-		
+		Communication with javascript:
+			@socketio.on("event_name") means that a function is an event
+			
+			events on the ServerSide can be called when the emit function is called in javascript with the correct function name
+			
+			events in javascript are set with the .on method 
+			
+			These events can be called from the server side with the .emit function 
+			
+			All events can have additional arguments passed and recieved as long as the event declaration allows for them
+			
 	
