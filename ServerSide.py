@@ -1,6 +1,7 @@
 #imports
 from app import app
-app.run()
+if __name__ == '__main__':
+    app.run()
 
 
 # def messageReceived(methods=['GET', 'POST']):
