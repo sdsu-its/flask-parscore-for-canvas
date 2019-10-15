@@ -1,17 +1,11 @@
-#imports
-from app import app
-app.run()
 
+# A very simple Flask Hello World app for you to get started with...
 
-# def messageReceived(methods=['GET', 'POST']):
-#     print('message was received!!!')
-# #example of a socketio event
-# #called from javascript with .emit
-# @socketio.on('my event')
-# def handle_my_custom_event(jsona, methods=['GET', 'POST']):
-#     print('received my event: ' + str(jsona))
-#     socketio.emit('user authenticated',callback=messageReceived())
-#
-#
-# if __name__ == '__main__':
-#     socketio.run(app, host="0.0.0.0", port=80,debug=False)
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+    return 'Hello from Flask!'
+
