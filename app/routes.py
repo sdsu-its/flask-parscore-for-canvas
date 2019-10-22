@@ -2,7 +2,7 @@ from app import app
 from flask import Flask, render_template , flash ,redirect, url_for
 from app.forms import LoginForm
 from flask_login import current_user, login_user
-from app.models import User
+from app.models import User, Course, Major
 from flask_login import logout_user
 from flask_login import login_required
 #Routes
@@ -24,6 +24,14 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+@app.route('/classes')
+def classes():
+    current_courses =Course.query.all()
+    return render_template('classes.html',title='Classes',course_list=current_courses)
+@app.route('/majors')
+def majors():
+    current_majors = Major.query.all()
+    return render_template('majors.html',title='Majors',major_list=current_majors)
 @app.route('/')
 @app.route('/index')
 @login_required

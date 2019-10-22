@@ -21,3 +21,25 @@ class User(UserMixin,db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+class Major(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    major_name = db.Column(db.String(128))
+    department= db.Column(db.String(128))
+    units_required = db.Column(db.Integer)
+    required_courses=db.relationship('Course', backref='major_required', lazy='dynamic')
+
+class Course(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    schedule_number = db.Column(db.Integer)
+    course_name = db.Column(db.String(128))
+    date_and_time = db.Column(db.String(128))
+    course_location = db.Column(db.String(128))
+    instructor_name = db.Column(db.String(128))
+    unit_count = db.Column(db.Integer)
+    max_students = db.Column(db.Integer)
+    department= db.Column(db.String(128))
+    major_id = db.Column(db.Integer, db.ForeignKey('major.id'))
+    def __repr__(self):
+        return '<Course {}>'.format(self.course_name)
+
+

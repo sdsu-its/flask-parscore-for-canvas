@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>HERE ARE THE CLASSES</h1>
+{% for course in course_list %}
+    <div><p>{{ course.course_name }}</p></div>
+{% endfor %}
+{% endblock %}
