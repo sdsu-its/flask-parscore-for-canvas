@@ -17,6 +17,10 @@
         <a href="{{ url_for('logout') }}">Logout</a>
         <a href="{{ url_for('classes') }}">Classes</a>
         <a href="{{ url_for('majors') }}">Majors</a>
+        {% if current_user.access_level=="Admin" %}
+        <a href="{{ url_for('register') }}">Click to Register</a>
+        <a href="{{ url_for('Users') }}">User Directory</a>
+        {% endif %}
         {% endif %}
     </div>
         <hr>

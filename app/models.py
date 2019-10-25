@@ -21,6 +21,26 @@ class User(UserMixin,db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+class Student(User):
+    def __init__(self, *args, **kwargs):
+        self.access_level='Student'
+        super(Student, self).__init__(*args, **kwargs)
+    enrolled_courses=db.relationship('Course', backref='student_enrollement', lazy='dynamic')
+    def __repr__(self):
+        return '<Student {}>'.format(self.username)
+class Teacher(User):
+    def __init__(self, *args, **kwargs):
+        self.access_level='Teacher'
+        super(Teacher, self).__init__(*args, **kwargs)
+    teaching_courses=db.relationship('Course', backref='teaching_user', lazy='dynamic')
+    def __repr__(self):
+        return '<Teacher {}>'.format(self.username)
+class Admin(User):
+    def __init__(self, *args, **kwargs):
+        self.access_level='Admin'
+        super(Admin, self).__init__(*args, **kwargs)
+    def __repr__(self):
+        return '<Admin {}>'.format(self.username)
 class Major(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     major_name = db.Column(db.String(128))
@@ -39,6 +59,7 @@ class Course(db.Model):
     max_students = db.Column(db.Integer)
     department= db.Column(db.String(128))
     major_id = db.Column(db.Integer, db.ForeignKey('major.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     def __repr__(self):
         return '<Course {}>'.format(self.course_name)
 
