@@ -1,6 +1,55 @@
-{% extends "base.html" %}
-{% block content %}
-<h1>Hi, {{ current_user.username }}!</h1>
-  <p> Welcome to the course registration application<p>
+<!DOCTYPE html>
+<html lang="en">
+<title>Canvas Parscore Converter</title>
 
-{% endblock %}
+<head>
+    <title> ITS Canvas Parscore Converter </title>
+    <link rel="icon" href="static/its-logo.png">
+    <link rel="stylesheet" href="static/dropzone-5.7.0/dist/dropzone.css">
+    <link rel="stylesheet" href="static/style.css">
+</head>
+
+<body>
+    <!--Script Imports-->
+    <script src="static/dropzone-5.7.0/dist/dropzone.js"></script>
+
+    <main role="main" class="container">
+
+        <div id="header">
+            <a href="http://its.sdsu.edu" class="no-decoration">
+                <img id="logo" src="static/sdsu-its-logo.png">
+            </a>
+        </div>
+
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert header"><i class="info-circle"></i>&nbsp;Hello There!</i>
+            </h4>
+
+            <p>This is the Parscore Conversion tool for use with the new Canvas system. If you've used the previous tool developed for Blackboard, this will function the same way.
+            </p>
+
+            <div class="row justifed-to-center no-gutters" style="text-align: center">
+            </div>
+        </div>
+        <form method=post enctype=multipart/form-data class="dropzone" id="file-dropzone">
+            <div class="fallback">
+            <p><input name="file" type="file" multiple/>
+            </div>
+            <input type=submit value=Upload>
+        </form>
+
+    </main>
+
+    <footer class="footer">
+
+        <div class="container">
+            <span> Canvas Parscore Conversion Tool - Version <span id="converter-version" class="version">0.0.1</span></span>
+        </div>
+
+    </footer>
+
+</body>
+
+</html>
+
+</html>

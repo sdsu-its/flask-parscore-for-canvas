@@ -1,0 +1,85 @@
+html {
+    position: relative;
+    min-height: 100%
+}
+
+body {
+    margin-bottom: 40px;
+}
+
+#header {
+    text-align: center;
+    padding-bottom: 2rem;
+}
+
+#logo {
+    height: 5.75rem;
+    margin: 2em 0 0;
+}
+
+a.no-decoration {
+    text-decoration: none;
+    border-bottom: none;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    line-height: 35px;
+    font-size: .75rem;
+}
+
+.footer .container {
+    border-top: solid #E0E0E0 1px;
+    color: #666666;
+    cursor: default;
+}
+
+.footer .container a,
+.footer.container a:hover {
+    text-decoration: none;
+    color: inherit;
+    cursor: default;
+}
+
+.footer.footer a:not(.icon):hover,
+footer.footer a:visited:not(.icon):hover {
+    border-bottom-color: #1166BB;
+}
+
+footer.footer a:not(.icon):hover,
+footer.footer a:visted:not(.icon):hover {
+    border-bottom: 1px solid #d3d6db
+}
+
+footer.footer a:hover,
+footer.footer a:visited:hover {
+    color: #69707a;
+}
+
+footer.footer a:hover,
+footer.footer a:visted:hover {
+    color: #222324;
+}
+
+footer.footer span.version {
+    font-style: italic;
+}
+
+footer.footer .right {
+    float: right;
+}
+
+footer.footer span:not(:first-child) {
+    margin: 0 .25em 0 0;
+}
+
+footer.footer span:not(:last-child) {
+    margin: 0 0 0 .25em;
+}
+
+footer.footer #github:hover {
+    color: #000;
+}
