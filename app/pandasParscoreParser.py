@@ -36,7 +36,43 @@ def inputConv(dataFrame):
     retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access Date","Final Score"))
     retDf = retDf.rename(columns = {"SIS User ID": "RED ID",
                                   "Final Score":"Course Letter Grade"})
+    for ()
     return retDf
+
+def toLetterGrade(percent):
+    letterGrade = ' '
+
+    if(percent < 97.5):
+        letterGrade = 'A+'
+    elif(percent > 92.5 and percent < 97.5 ):
+        letterGrade = 'A'
+    elif(percent > 90 and percent < 92.5 ):
+        letterGrade = 'A-'
+    elif(percent > 87.5 and percent < 90 ):
+        letterGrade = 'B+'
+    elif(percent > 82.5 and percent < 87.5 ):
+        letterGrade = 'B'
+    elif(percent > 80 and percent < 82.5 ):
+        letterGrade = 'B-'
+    elif(percent > 77.5 and percent < 80 ):
+        letterGrade = 'C+'
+    elif(percent > 72.5 and percent < 77.5 ):
+        letterGrade = 'C'
+    elif(percent > 70 and percent < 72.5 ):
+        letterGrade = 'C-'
+    elif(percent > 67.5 and percent < 70 ):
+        letterGrade = 'D+'
+    elif(percent > 62.5 and percent < 67.5 ):
+        letterGrade = 'D'
+    elif(percent > 60 and percent < 62.5 ):
+        letterGrade = 'D-'
+    elif(percent < 60 ):
+        letterGrade = 'F'
+    
+    return letterGrade
+        
+    
+
 
 
 #parscoreParser("canvas/Grades-B_A370-06-Fall2019.csv")
