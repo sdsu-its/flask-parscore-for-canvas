@@ -1,41 +1,79 @@
+
+
 from app import app
-from flask import Flask, request, redirect, url_for, render_template, send_from_directory
+from flask import Flask, request,Response, redirect,session, url_for, render_template, send_from_directory
 from werkzeug.utils import secure_filename
 import os
-
-DOWNLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__)) + '/uploads/'
+from requests_toolbelt import MultipartEncoder
+import requests
+import zipfile
+DOWNLOAD_FOLDER = '/tmp'
 app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
-UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__)) + '/uploads/'
+UPLOAD_FOLDER = '/tmp'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
+app.secret_key = b'4234mdfsjnfsd3342'
 from app import pandasParscoreParser
+from flask_dropzone import Dropzone
+# Dropzone settings
+app.config['DROPZONE_UPLOAD_MULTIPLE'] = True
+#app.config['DROPZONE_ALLOWED_FILE_CUSTOM'] = True
+app.config['DROPZONE_ALLOWED_FILE_CUSTOM'] = True
+app.config['DROPZONE_ALLOWED_FILE_TYPE'] = '.csv'
+app.config['DROPZONE_REDIRECT_VIEW'] = 'results'
+app.config.update(
+    # Flask-Dropzone config:
+    DROPZONE_MAX_FILE_SIZE=8,
+    DROPZONE_MAX_FILES=50,
+    DROPZONE_PARALLEL_UPLOADS=20,  # set parallel amount
+    DROPZONE_UPLOAD_MULTIPLE=True,  # enable upload multiple
+)
+dropzone = Dropzone(app)
 
 def process_file(path, filename):
-   pandasParscoreParser.parscoreParser(path)
+    pandasParscoreParser.parscoreParser(path)
+    #print(filename)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
-    return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename, as_attachment=True)
+    return send_from_directory(app.config["DOWNLOAD_FOLDER"], filename=filename, as_attachment=True)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == 'POST':
-       if 'file' not in request.files:
-           print('No file attached in request')
-           return redirect(request.url)
-       file = request.files['file']
-       if file.filename == '':
-           print('No file selected')
-           return redirect(request.url)
-       if file and allowed_file(file.filename):
-           filename = secure_filename(file.filename)
-           file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-           process_file(os.path.join(app.config['UPLOAD_FOLDER'], filename), filename)
-           return redirect(url_for('uploaded_file', filename=filename))
     return render_template('index.html')
+@app.route('/results',methods=['GET','POST'])
+def results():
+    if 'filenames' not in session:
+        session['filenames']=[]
+    if request.method == 'POST':
+       session.clear()
+       session['filenames']=[]
+       for key, f in request.files.items():
+           if key.startswith('file'):
+               f.save(os.path.join(app.config['UPLOAD_FOLDER'], f.filename))
+               process_file(os.path.join(app.config['UPLOAD_FOLDER'], f.filename), f.filename)
+               session['filenames'].append(f.filename)
+    #session['filenames'].append('impossible')
+    if session['filenames'] == []:
+        a='a'
+    elif len(session['filenames'])==1:
+        for files in session['filenames']:
+            if not files=='impossible':
+                return redirect(url_for('uploaded_file',filename=files))
+  
+    else:
+        os.chdir('/tmp/')
+        zipf = zipfile.ZipFile('results.zip','w', zipfile.ZIP_DEFLATED)
+        for files in session['filenames']:
+            if not files=='impossible':
+                zipf.write(files)
+        zipf.close()
+        return redirect(url_for('uploaded_file',filename='results.zip'))
+    session.clear()
+    session['filenames']=[]
 
-
-
-ALLOWED_EXTENSIONS = {'csv'}
-def allowed_file(filename):
-   return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    #files=find_csv_filenames(path_to_dir=app.config['UPLOAD_FOLDER'])
+    #for file in files:
+         #return redirect(url_for('uploaded_file', filename=file))
+    #return render_template('index.html')
+    return render_template('results.html')

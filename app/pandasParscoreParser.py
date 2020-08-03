@@ -25,20 +25,80 @@ def readFile(csvFilePath):
 
 #convert input DataFrame file into correct format
 def inputConv(dataFrame):
+    retDf=dataFrame
     cols = dataFrame["Student"].str.partition(" ", True)
     dataFrame["Last Name"]= cols[2]
     dataFrame["First Name"]= cols[0]
     dataFrame.drop(columns =["Student"], inplace = True)
-    convDf = dataFrame[['SIS User ID','Last Name','First Name','Final Score']]
-    convDf.rename(columns = {"SIS User ID": "RED ID",
-                                  "Final Score":"Course Letter Grade"})
-    convDf.insert(3, "Last Access Date", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
-    retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access Date","Final Score"))
-    retDf = retDf.rename(columns = {"SIS User ID": "RED ID",
-                                  "Final Score":"Course Letter Grade"})
-    return retDf
+    if 'Override Score' in dataFrame:
+        convDf = dataFrame[['SIS User ID','Last Name','First Name','Override Score']]
+        convDf.rename(columns = {"SIS User ID": "RED ID",
+                                  "Override Score":"Course Letter Grade"})
+        convDf.insert(3, "Last Access Date", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
+        retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access Date","Override Score"))
+        retDf = retDf.rename(columns = {"SIS User ID": "RED ID","Override Score":"Course Letter Grade"})
+        retDf = retDf.apply(lambda x: seriesIteration(x) if x.name == "Course Letter Grade" else x)
+    elif 'Override Grade' in dataFrame:
+        convDf = dataFrame[['SIS User ID','Last Name','First Name','Override Grade']]
+        convDf.rename(columns = {"SIS User ID": "RED ID",'Override Grade':'Course Letter Grade'})
+        convDf.insert(3, "Last Access Date", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
+        retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access Date","Override Grade"))
+        retDf = retDf.rename(columns = {"SIS User ID": "RED ID","Override Grade":"Course Letter Grade"})
+
+    elif 'Final Grade' in dataFrame:
+        convDf = dataFrame[['SIS User ID','Last Name','First Name','Final Grade']]
+        convDf.rename(columns = {"SIS User ID": "RED ID",'Final Grade':'Course Letter Grade'})
+        convDf.insert(3, "Last Access Date", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
+        retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access Date","Final Grade"))
+        retDf = retDf.rename(columns = {"SIS User ID": "RED ID","Final Grade":"Course Letter Grade"})
+    elif  'Final Score' in dataFrame:
+    	convDf = dataFrame[['SIS User ID','Last Name','First Name','Final Score']]
+    	convDf.rename(columns = {"SIS User ID": "RED ID",'Final Score':'Course Letter Grade'})
+    	convDf.insert(3, "Last Access Date", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
+    	retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access Date","Final Score"))
+    	retDf = retDf.rename(columns = {"SIS User ID": "RED ID","Final Score":"Course Letter Grade"})
+    	retDf = retDf.apply(lambda x: seriesIteration(x) if x.name == "Course Letter Grade" else x)
+    modDfObj = retDf.apply(lambda x: stripSeries(x) if x.name == "First Name" else x)
+    modDfObj = modDfObj.apply(lambda x: stripSeries(x) if x.name == "Last Name" else x)
+
+    return modDfObj
+
+def stripSeries(inputSeries):
+    return inputSeries.apply(stripNonalpha)
+def stripNonalpha(inputString):
+    return ''.join(filter(str.isalnum, inputString))
+def seriesIteration(input):
+    return input.apply(toLetterGrade)
+def toLetterGrade(percentString):
+    letterGrade = 'n/a' 
+    percent=float(percentString)
+    if percent >= 94 :
+        letterGrade='A'
+    elif percent >= 90 :
+	letterGrade='A-'
+    elif percent >= 88 :
+        letterGrade='B+'
+    elif percent >= 84 :
+        letterGrade='B'
+    elif percent >= 80 :
+        letterGrade='B-'
+    elif percent >= 78 :
+        letterGrade='C+'
+    elif percent >= 74 :
+        letterGrade='C'
+    elif percent >= 70 :
+        letterGrade='C-'
+    elif percent >= 68 :
+        letterGrade='D+'
+    elif percent >= 64 :
+        letterGrade='D'
+    elif percent >= 60 :
+        letterGrade='D-'
+    else:
+        letterGrade='F'
 
 
+    return letterGrade
 #parscoreParser("canvas/Grades-B_A370-06-Fall2019.csv")
 #if __name__ == '__main__':
     #parscoreParser(*sys.arg[1:])

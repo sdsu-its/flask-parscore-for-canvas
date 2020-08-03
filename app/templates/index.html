@@ -1,17 +1,20 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<title>Canvas Parscore Converter</title>
+<title>Canvas to Webportal Grade Converter</title>
 
 <head>
-    <title> ITS Canvas Parscore Converter </title>
+    <title> ITS Canvas to Webportal Grade Sheet Converter </title>
     <link rel="icon" href="static/its-logo.png">
-    <link rel="stylesheet" href="static/dropzone-5.7.0/dist/dropzone.css">
+    {{ dropzone.load_css() }}
+    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10%; min-height: 400px;') }}
+    {{ dropzone.config(redirect_url=url_for('results')) }}
     <link rel="stylesheet" href="static/style.css">
 </head>
 
 <body>
     <!--Script Imports-->
-    <script src="static/dropzone-5.7.0/dist/dropzone.js"></script>
+    <!--<script src="static/dropzone-5.7.0/dist/dropzone.js"></script>-->
 
     <main role="main" class="container">
 
@@ -25,19 +28,21 @@
             <h4 class="alert header"><i class="info-circle"></i>&nbsp;Hello There!</i>
             </h4>
 
-            <p>This is the Parscore Conversion tool for use with the new Canvas system. If you've used the previous tool developed for Blackboard, this will function the same way.
+            <p>Drop your Canvas grade sheet (.csv) in the blue rectangle to convert it to Webportal format
             </p>
 
             <div class="row justifed-to-center no-gutters" style="text-align: center">
             </div>
         </div>
-        <form method=post enctype=multipart/form-data class="dropzone" id="file-dropzone">
+        <!--<form action="javascript:void(0);" method=post enctype=multipart/form-data class="dropzone" id="file-dropzone">
             <div class="fallback">
             <p><input name="file" type="file" multiple/>
             </div>
-            <input type=submit value=Upload>
-        </form>
-
+	    <input type="submit" value="Submit">
+        </form>-->
+      {{ dropzone.create(action='results') }}
+  {{ dropzone.load_js() }}
+  {{ dropzone.config() }}
     </main>
 
     <footer class="footer">
