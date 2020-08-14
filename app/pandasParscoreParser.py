@@ -30,30 +30,32 @@ def inputConv(dataFrame):
     dataFrame["Last Name"]= cols[2]
     dataFrame["First Name"]= cols[0]
     dataFrame.drop(columns =["Student"], inplace = True)
+    dataFrame = dataFrame[  dataFrame['Last Name'] != 'Student'] 
     if 'Override Score' in dataFrame:
         convDf = dataFrame[['SIS User ID','Last Name','First Name','Override Score']]
-        convDf.rename(columns = {"SIS User ID": "RED ID",
+        convDf.rename(columns = {"SIS User ID": "Username",
                                   "Override Score":"Course Letter Grade"})
         convDf.insert(3, "Last Access Date", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
         retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access Date","Override Score"))
-        retDf = retDf.rename(columns = {"SIS User ID": "RED ID","Override Score":"Course Letter Grade"})
+        retDf = retDf.rename(columns = {"SIS User ID": "Username","Override Score":"Course Letter Grade"})
+        retDf["Course Letter Grade"]=detectMissing(retDf["Course Letter Grade"],dataFrame["Final Score"])
         retDf = retDf.apply(lambda x: seriesIteration(x) if x.name == "Course Letter Grade" else x)
     elif 'Override Grade' in dataFrame:
         convDf = dataFrame[['SIS User ID','Last Name','First Name','Override Grade']]
-        convDf.rename(columns = {"SIS User ID": "RED ID",'Override Grade':'Course Letter Grade'})
+        convDf.rename(columns = {"SIS User ID": "Username",'Override Grade':'Course Letter Grade'})
         convDf.insert(3, "Last Access Date", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
         retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access Date","Override Grade"))
-        retDf = retDf.rename(columns = {"SIS User ID": "RED ID","Override Grade":"Course Letter Grade"})
-
+        retDf = retDf.rename(columns = {"SIS User ID": "Username","Override Grade":"Course Letter Grade"})
+        retDf["Course Letter Grade"]=detectMissing(retDf["Course Letter Grade"],dataFrame["Final Grade"])
     elif 'Final Grade' in dataFrame:
         convDf = dataFrame[['SIS User ID','Last Name','First Name','Final Grade']]
-        convDf.rename(columns = {"SIS User ID": "RED ID",'Final Grade':'Course Letter Grade'})
+        convDf.rename(columns = {"SIS User ID": "Username",'Final Grade':'Course Letter Grade'})
         convDf.insert(3, "Last Access Date", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
         retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access Date","Final Grade"))
-        retDf = retDf.rename(columns = {"SIS User ID": "RED ID","Final Grade":"Course Letter Grade"})
+        retDf = retDf.rename(columns = {"SIS User ID": "Username","Final Grade":"Course Letter Grade"})
     elif  'Final Score' in dataFrame:
     	convDf = dataFrame[['SIS User ID','Last Name','First Name','Final Score']]
-    	convDf.rename(columns = {"SIS User ID": "RED ID",'Final Score':'Course Letter Grade'})
+    	convDf.rename(columns = {"SIS User ID": "Username",'Final Score':'Course Letter Grade'})
     	convDf.insert(3, "Last Access Date", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
     	retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access Date","Final Score"))
     	retDf = retDf.rename(columns = {"SIS User ID": "RED ID","Final Score":"Course Letter Grade"})
@@ -63,6 +65,8 @@ def inputConv(dataFrame):
 
     return modDfObj
 
+def detectMissing(overrideSeries,baseSeries):
+    return overrideSeries.combine_first(baseSeries)
 def stripSeries(inputSeries):
     return inputSeries.apply(stripNonalpha)
 def stripNonalpha(inputString):

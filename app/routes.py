@@ -14,6 +14,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = b'4234mdfsjnfsd3342'
 from app import pandasParscoreParser
 from flask_dropzone import Dropzone
+import time
 # Dropzone settings
 app.config['DROPZONE_UPLOAD_MULTIPLE'] = True
 #app.config['DROPZONE_ALLOWED_FILE_CUSTOM'] = True
@@ -32,12 +33,20 @@ dropzone = Dropzone(app)
 def process_file(path, filename):
     pandasParscoreParser.parscoreParser(path)
     #print(filename)
-
+import thread
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
+    if os.path.exists('/tmp/'+filename):
+        thread.start_new_thread( delay_delete, (filename, ) )
     return send_from_directory(app.config["DOWNLOAD_FOLDER"], filename=filename, as_attachment=True)
 
-
+def delay_delete(path):
+    print "started"
+    time.sleep(10)
+    print "trying to delete"
+    os.remove('/tmp/'+path)
+    print "done"
+    return
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
