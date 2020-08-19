@@ -65,7 +65,7 @@ def results():
     if len(session['filenames'])==1:
         for files in session['filenames']:
             return redirect(url_for('uploaded_file',filename=files))
-    else:
+    elif len(session['filenames:
         os.chdir('/tmp/')
         zipf = zipfile.ZipFile('results.zip','w', zipfile.ZIP_DEFLATED)
         for files in session['filenames']:
