@@ -8,7 +8,7 @@
     <link rel="icon" href="static/its-logo.png">
     {{ dropzone.load_css() }}
     {{ dropzone.style('border: 2px dashed #0087F7; margin: 10%; min-height: 400px;') }}
-    {{ dropzone.config(redirect_url=url_for('results')) }}
+    {{ dropzone.config(redirect_url=url_for('error')) }}
     <link rel="stylesheet" href="static/style.css">
 </head>
 
@@ -24,10 +24,19 @@
             </a>
         </div>
 
-        <div class="alert alert-info" role="alert">
-            <h4 class="alert header"><i class="info-circle"></i>&nbsp;Hello There!</i>
-            </h4>
-
+        <div class="alert alert-info" role="alert"> 
+            {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+            <p>This tool converts Canvas gradesheets into a format SDSU webportal will accept.<br>
+               Please read the <a href="https://docs.google.com/document/d/1LEKbOTFKY8XQKYl_vyt_-lEzs21KyuLtimu-njIF3-o/edit?usp=sharing"  target="_blank">User Guide</a> before using the tool.<br>
+               If you need assistance using the tool contact ITS by making a ticket in <a href="sdsu.service-now.com">ServiceNow</a> or join the <a href="https://sdsu.zoom.us/j/6195946348">Virtual Fit Center</a> Zoom call<br>
             <p>Drop your Canvas grade sheet (.csv) in the blue rectangle to convert it to Webportal format
             </p>
 
@@ -40,18 +49,10 @@
             </div>
 	    <input type="submit" value="Submit">
         </form>-->
-      {{ dropzone.create(action='results') }}
+      {{ dropzone.create(action='error') }}
   {{ dropzone.load_js() }}
   {{ dropzone.config() }}
     </main>
-
-    <footer class="footer">
-
-        <div class="container">
-            <span> Canvas Parscore Conversion Tool - Version <span id="converter-version" class="version">0.0.1</span></span>
-        </div>
-
-    </footer>
 
 </body>
 

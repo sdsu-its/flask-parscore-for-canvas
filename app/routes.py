@@ -1,7 +1,5 @@
-
-
 from app import app
-from flask import Flask, request,Response, redirect,session, url_for, render_template, send_from_directory
+from flask import Flask,flash, request,Response, redirect,session, url_for, render_template, send_from_directory
 from werkzeug.utils import secure_filename
 import os
 from requests_toolbelt import MultipartEncoder
@@ -16,17 +14,17 @@ from app import pandasParscoreParser
 from flask_dropzone import Dropzone
 import time
 # Dropzone settings
-app.config['DROPZONE_UPLOAD_MULTIPLE'] = True
+app.config['DROPZONE_UPLOAD_MULTIPLE'] = False
 #app.config['DROPZONE_ALLOWED_FILE_CUSTOM'] = True
 app.config['DROPZONE_ALLOWED_FILE_CUSTOM'] = True
 app.config['DROPZONE_ALLOWED_FILE_TYPE'] = '.csv'
-app.config['DROPZONE_REDIRECT_VIEW'] = 'results'
+app.config['DROPZONE_REDIRECT_VIEW'] = 'error'
 app.config.update(
     # Flask-Dropzone config:
     DROPZONE_MAX_FILE_SIZE=8,
-    DROPZONE_MAX_FILES=50,
+    DROPZONE_MAX_FILES=1,
     DROPZONE_PARALLEL_UPLOADS=20,  # set parallel amount
-    DROPZONE_UPLOAD_MULTIPLE=True,  # enable upload multiple
+    DROPZONE_UPLOAD_MULTIPLE=False,  # enable upload multiple
 )
 dropzone = Dropzone(app)
 
@@ -35,6 +33,8 @@ def process_file(path, filename):
 import thread
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
+    #session.clear()
+    #session['filenames']=[]
     if os.path.exists('/tmp/'+filename):
         thread.start_new_thread( delay_delete, (filename, ) )
     return send_from_directory(app.config["DOWNLOAD_FOLDER"], filename=filename, as_attachment=True)
@@ -48,11 +48,15 @@ def index():
     return render_template('index.html')
 @app.route('/results',methods=['GET','POST'])
 def results():
-    if 'filenames' not in session:
-        session['filenames']=[]
+     if 'filename' in session:
+     	name=session['filename']
+     	session.clear()
+     	return render_template('results.html',file=name)
+     else:
+         return redirect(url_for('index'))
+@app.route('/error',methods=['GET','POST'])
+def error():
     if request.method == 'POST':
-       session.clear()
-       session['filenames']=[]
        for key, f in request.files.items():
            if key.startswith('file'):
                try:
@@ -60,19 +64,11 @@ def results():
                    process_file(os.path.join(app.config['UPLOAD_FOLDER'], f.filename), f.filename)
                except:
                    os.remove(os.path.join(app.config['UPLOAD_FOLDER'],f.filename))
-                   return render_template('results.html')
-               session['filenames'].append(f.filename)
-    if len(session['filenames'])==1:
-        for files in session['filenames']:
-            return redirect(url_for('uploaded_file',filename=files))
-    else:
-        os.chdir('/tmp/')
-        zipf = zipfile.ZipFile('results.zip','w', zipfile.ZIP_DEFLATED)
-        for files in session['filenames']:
-            zipf.write(files)
-        zipf.close()
-        return redirect(url_for('uploaded_file',filename='results.zip'))
-    session.clear()
-    session['filenames']=[]
-
-    return render_template('results.html')
+                   return render_template('error.html')
+               session['filename']=f.filename
+               return render_template('results.html')
+    if 'filename' in session:
+        #for files in session['filenames']:
+        return redirect(url_for('results'))
+    #return redirect(url_for('index'))
+    return render_template('error.html')

@@ -5,6 +5,9 @@ html {
 
 body {
     margin-bottom: 40px;
+    margin-left: 10%;
+    margin-right: 10%;
+    font-size: 30px;
 }
 
 #header {

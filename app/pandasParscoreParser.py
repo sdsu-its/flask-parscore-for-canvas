@@ -25,22 +25,25 @@ def readFile(csvFilePath):
 
 #convert input DataFrame file into correct format
 def inputConv(dataFrame):
+    dataFrame = dataFrame[  dataFrame.Student != 'Student, Test']
     retDf=dataFrame
     cols = dataFrame["Student"].str.partition(" ", True)
     dataFrame["Last Name"]= cols[2]
     dataFrame["First Name"]= cols[0]
     dataFrame.drop(columns =["Student"], inplace = True)
-    dataFrame = dataFrame[  dataFrame['Last Name'] != 'Student'] 
-    if 'Override Score' in dataFrame:
-        convDf = dataFrame[['SIS User ID','Last Name','First Name','Override Score']]
-        convDf.rename(columns = {"SIS User ID": "Username",
-                                  "Override Score":"Course Letter Grade"})
-        convDf.insert(3, "Last Access", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
-        retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access","Override Score"))
-        retDf = retDf.rename(columns = {"SIS User ID": "Username","Override Score":"Course Letter Grade"})
-        retDf["Course Letter Grade"]=detectMissing(retDf["Course Letter Grade"],dataFrame["Final Score"])
-        retDf = retDf.apply(lambda x: seriesIteration(x) if x.name == "Course Letter Grade" else x)
-    elif 'Override Grade' in dataFrame:
+    dataFrame = dataFrame[  dataFrame["Last Name"] != 'Student']
+    dataFrame = dataFrame[  dataFrame["First Name"] != 'Test']
+
+   # if 'Override Score' in dataFrame:
+    #    convDf = dataFrame[['SIS User ID','Last Name','First Name','Override Score']]
+    #    convDf.rename(columns = {"SIS User ID": "Username",
+    #                              "Override Score":"Course Letter Grade"})
+    #    convDf.insert(3, "Last Access", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
+    #    retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access","Override Score"))
+    #    retDf = retDf.rename(columns = {"SIS User ID": "Username","Override Score":"Course Letter Grade"})
+    #    retDf["Course Letter Grade"]=detectMissing(retDf["Course Letter Grade"],dataFrame["Final Score"])
+    #    retDf = retDf.apply(lambda x: seriesIteration(x) if x.name == "Course Letter Grade" else x)
+    if 'Override Grade' in dataFrame:
         convDf = dataFrame[['SIS User ID','Last Name','First Name','Override Grade']]
         convDf.rename(columns = {"SIS User ID": "Username",'Override Grade':'Course Letter Grade'})
         convDf.insert(3, "Last Access", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
@@ -53,13 +56,13 @@ def inputConv(dataFrame):
         convDf.insert(3, "Last Access", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
         retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access","Final Grade"))
         retDf = retDf.rename(columns = {"SIS User ID": "Username","Final Grade":"Course Letter Grade"})
-    elif  'Final Score' in dataFrame:
-    	convDf = dataFrame[['SIS User ID','Last Name','First Name','Final Score']]
-    	convDf.rename(columns = {"SIS User ID": "Username",'Final Score':'Course Letter Grade'})
-    	convDf.insert(3, "Last Access", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
-    	retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access","Final Score"))
-    	retDf = retDf.rename(columns = {"SIS User ID": "Username","Final Score":"Course Letter Grade"})
-    	retDf = retDf.apply(lambda x: seriesIteration(x) if x.name == "Course Letter Grade" else x)
+    #elif  'Final Score' in dataFrame:
+    #	convDf = dataFrame[['SIS User ID','Last Name','First Name','Final Score']]
+   # 	convDf.rename(columns = {"SIS User ID": "Username",'Final Score':'Course Letter Grade'})
+    #	convDf.insert(3, "Last Access", currDate.strftime("%Y-%m-%d %H:%M:%S"), True)
+    #	retDf = convDf.reindex(columns=("Last Name","First Name","SIS User ID","Last Access","Final Score"))
+    #	retDf = retDf.rename(columns = {"SIS User ID": "Username","Final Score":"Course Letter Grade"})
+    #	retDf = retDf.apply(lambda x: seriesIteration(x) if x.name == "Course Letter Grade" else x)
     modDfObj = retDf.apply(lambda x: stripSeries(x) if x.name == "First Name" else x)
     modDfObj = modDfObj.apply(lambda x: stripSeries(x) if x.name == "Last Name" else x)
     modDfObj["Username"] = modDfObj["Username"].astype(int)
