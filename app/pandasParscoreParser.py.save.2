@@ -26,14 +26,15 @@ def readFile(csvFilePath):
 #convert input DataFrame file into correct format
 def inputConv(dataFrame):
     dataFrame = dataFrame[  dataFrame.Student != 'Student, Test']
+    dataFrame = dataFrame[  dataFrame.Student != 'Points Possible']
     retDf=dataFrame
-    cols = dataFrame["Student"].str.partition(",", True)
-    dataFrame["Last Name"]= cols[0]
-    dataFrame["First Name"]= cols[2]
+    cols = dataFrame["Student"].str.partition(" ", True)
+    dataFrame["Last Name"]= cols[2]
+    dataFrame["First Name"]= cols[0]
     dataFrame.drop(columns =["Student"], inplace = True)
     dataFrame = dataFrame[  dataFrame["Last Name"] != 'Student']
     dataFrame = dataFrame[  dataFrame["First Name"] != 'Test']
-    dataFrame = dataFrame[  dataFrame["First Name"] != '']
+    dataFrame = dataFrame[  dataFrame["First Name"] != 'Points']
    # if 'Override Score' in dataFrame:
     #    convDf = dataFrame[['SIS User ID','Last Name','First Name','Override Score']]
     #    convDf.rename(columns = {"SIS User ID": "Username",
@@ -73,7 +74,7 @@ def detectMissing(overrideSeries,baseSeries):
 def stripSeries(inputSeries):
     return inputSeries.apply(stripNonalpha)
 def stripNonalpha(inputString):
-    return inputString.replace(',','').lstrip()
+    return ''.join(filter(str.isalnum, inputString))
 def seriesIteration(input):
     return input.apply(toLetterGrade)
 def toLetterGrade(percentString):

@@ -36,12 +36,13 @@ def uploaded_file(filename):
     #session.clear()
     #session['filenames']=[]
     if os.path.exists('/tmp/'+filename):
+        os.rename('/tmp/'+filename,'/tmp/converted-'+filename)
         thread.start_new_thread( delay_delete, (filename, ) )
-    return send_from_directory(app.config["DOWNLOAD_FOLDER"], filename=filename, as_attachment=True)
+    return send_from_directory(app.config["DOWNLOAD_FOLDER"], filename='converted-'+filename, as_attachment=True)
 
 def delay_delete(path):
-    time.sleep(10)
-    os.remove('/tmp/'+path)
+    time.sleep(30)
+    os.remove('/tmp/converted-'+path)
     return
 @app.route('/', methods=['GET', 'POST'])
 def index():
